@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>a755ef91-f504-4a26-8096-be2ccd24d9fb</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fly.Flight.Application\Fly.Flight.Application\Fly.Flight.Application.csproj" />
+    <ProjectReference Include="..\Fly.Flight.Domain\Fly.Flight.Domain\Fly.Flight.Domain.csproj" />
+    <ProjectReference Include="..\Fly.Flight.Infrastructure\Fly.Flight.Infrastructure\Fly.Flight.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

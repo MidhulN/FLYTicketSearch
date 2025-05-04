@@ -3,6 +3,7 @@ using Fly.Flight.API.Models.Requests;
 using Fly.Flight.Application.Queries;
 using Fly.Flight.Domain.Entities;
 using Fly.Flight.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,6 +16,7 @@ namespace Fly.Flight.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FlightController : ControllerBase
     {
         private readonly MediatR.IMediator _mediator;

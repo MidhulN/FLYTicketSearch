@@ -8,6 +8,7 @@ services:
       dockerfile: Fly.Flight.API/Dockerfile
     depends_on: 
         - fly.flight.sqlserver
+        - fly.flight.keycloak
     networks:
       - fly-network
        
@@ -19,7 +20,8 @@ services:
     ports:
       - "1434:1433"
     depends_on:
-      - fly.flight.elasticsearch
+      fly.flight.elasticsearch:
+        condition: service_healthy
     volumes:
       - sql_data:/var/opt/mssql
     networks:
@@ -33,12 +35,37 @@ services:
       - "9200:9200"
     networks:
       - fly-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   fly.flight.redis:
     image: redis:7
     ports:
        - "6379:6379"
     restart: always
+    networks:
+      - fly-network
+
+  fly.flight.keycloak:
+    image: quay.io/keycloak/keycloak:22.0.5
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_REALM_NAME=FlyTicket
+      - KC_HOSTNAME=fly.flight.keycloak
+      - KC_HTTP_ENABLED=true
+      - KEYCLOAK_FRONTEND_URL=http://fly.flight.keycloak:8080
+      - KC_DB= dev-file
+      - KC_IMPORT= /opt/keycloak/data/import/FlyTicket-realm.json
+       
+    volumes:
+      - ../../Configuration/keycloak-import:/opt/keycloak/data/import
+    command: start-dev --import-realm
+    ports:
+      - 8080:8080
     networks:
       - fly-network
 

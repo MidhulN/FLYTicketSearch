@@ -1,4 +1,5 @@
-﻿using Fly.Flight.API.Models;
+﻿using FluentValidation;
+using Fly.Flight.API.Models;
 using Fly.Flight.API.Models.Requests;
 using Fly.Flight.Application.Queries;
 using Fly.Flight.Domain.Entities;
@@ -20,20 +21,26 @@ namespace Fly.Flight.API.Controllers
     public class FlightController : ControllerBase
     {
         private readonly MediatR.IMediator _mediator;
-        public FlightController(MediatR.IMediator mediator)
+        private readonly IValidator<SearchFlightsQuery> _validator;
+        public FlightController(MediatR.IMediator mediator, IValidator<SearchFlightsQuery> validator)
         {
             _mediator = mediator;
+            _validator = validator;
         }
 
         [HttpGet("search")]
         public async Task<ActionResult<ApiResponse<IEnumerable<Flights>>>> Search([FromQuery] SearchFlightsQuery flightSearchRequest)
         {
-
+            var isParamValid = await _validator.ValidateAsync(flightSearchRequest);
+            if (!isParamValid.IsValid)
+                return BadRequest(isParamValid.Errors.Select(x=>x.ErrorMessage));
+           
             var flights = await _mediator.Send(flightSearchRequest);
             return Ok(new ApiResponse<IEnumerable<Flights>>
             {
                 Data = flights,
-                Message = flights.Any() ? "found" : "nothing found"
+                Message = flights.Any() ? "found" : "nothing found",
+                statuscode=flights.Any()? StatusCodes.Status200OK: StatusCodes.Status204NoContent
             }) ;
         }
     }

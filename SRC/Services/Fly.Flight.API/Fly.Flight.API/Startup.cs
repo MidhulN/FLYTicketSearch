@@ -1,4 +1,7 @@
+using FluentValidation;
 using Fly.Flight.API.Extensions;
+using Fly.Flight.API.Middleware;
+using Fly.Flight.Application.Features.Validators;
 using Fly.Flight.Domain.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -69,6 +72,7 @@ namespace Fly.Flight.API
                  });
 
             services.AddAuthorization();
+            services.AddValidatorsFromAssemblyContaining<SearchFlightsQueryValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,10 +90,10 @@ namespace Fly.Flight.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

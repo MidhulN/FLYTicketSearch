@@ -92,6 +92,7 @@ namespace Fly.Flight.API
             app.UseRouting();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseAuthentication();
+            app.UseMiddleware<RequestResponseLoggingMiddleware>();
             app.UseAuthorization();
             
             app.UseEndpoints(endpoints =>

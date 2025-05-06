@@ -1,16 +1,7 @@
 version: '3.4'
 
 services:
-  fly.flight.api:
-    image: ${DOCKER_REGISTRY-}flyflightapi
-    build:
-      context: .
-      dockerfile: Fly.Flight.API/Dockerfile
-    depends_on: 
-        - fly.flight.sqlserver
-        - fly.flight.keycloak
-    networks:
-      - fly-network
+  
        
   fly.flight.sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -23,7 +14,7 @@ services:
       fly.flight.elasticsearch:
         condition: service_healthy
     volumes:
-      - sql_data:/var/opt/mssql
+      - ../../sql/init:/docker-entrypoint-initdb.d
     networks:
       - fly-network
   
@@ -37,7 +28,7 @@ services:
       - fly-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
 
@@ -66,6 +57,22 @@ services:
     command: start-dev --import-realm
     ports:
       - 8080:8080
+    networks:
+      - fly-network
+
+  fly.flight.api:
+    image: ${DOCKER_REGISTRY-}flyflightapi
+    build:
+      context: .
+      dockerfile: Fly.Flight.API/Dockerfile
+    depends_on: 
+        - fly.flight.sqlserver
+        - fly.flight.keycloak
+    environment:
+       - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5001:443"
+      - "5000:80"
     networks:
       - fly-network
 

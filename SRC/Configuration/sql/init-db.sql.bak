@@ -1,0 +1,4 @@
+IF DB_ID('Flights') IS NULL
+BEGIN
+    CREATE DATABASE Flights;
+END

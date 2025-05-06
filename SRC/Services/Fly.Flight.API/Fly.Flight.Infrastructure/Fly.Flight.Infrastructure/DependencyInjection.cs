@@ -51,7 +51,7 @@ namespace Fly.Flight.Infrastructure
             services.AddTransient<DataSeeder>();
 
 
-            services.AddHostedService<DataSeederHostedService>();
+            //services.AddHostedService<DataSeederHostedService>();
 
             return services;
         }

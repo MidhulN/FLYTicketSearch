@@ -3,6 +3,7 @@ using Fly.Flight.API.Extensions;
 using Fly.Flight.API.Middleware;
 using Fly.Flight.Application.Features.Validators;
 using Fly.Flight.Domain.Interfaces;
+using Fly.Flight.Infrastructure.Migration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -79,13 +80,12 @@ namespace Fly.Flight.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             
-            if (env.IsDevelopment())
-            {
+            
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fly.Flight.API v1"));
                 
-            }
+            
 
             app.UseHttpsRedirection();
 
@@ -99,6 +99,7 @@ namespace Fly.Flight.API
             {
                 endpoints.MapControllers();
             });
+           
         }
     }
 }
